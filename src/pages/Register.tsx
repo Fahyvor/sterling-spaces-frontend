@@ -32,18 +32,29 @@ const Register: React.FC = () => {
     }
     console.log("Registering with", formData);
     setIsLogginIn(true);
-    // Handle registration logic here
-    try {
-      const response = await axios.post(`${API_URL}/api/auth/login`, formData);
+  
+    // Create a new object excluding confirmPassword
+    const { confirmPassword, ...dataToSend } = formData;
 
-      if(response && response.data) {
+    console.log(confirmPassword)
+    console.log("Data without confirm password", dataToSend);
+  
+    try {
+      const response = await axios.post(`${API_URL}/api/auth/register`, dataToSend);
+  
+      if (response && response.data) {
         toast(response.data.message); // Accessing message from response.data
+        window.location.href="/login"
       }
     } catch (error) {
       console.error("Error during registration:", error);
       toast("An error occurred during registration.");
+    } finally {
+      setIsLogginIn(false);
     }
   }
+  
+  
 
   return (
     <div className="flex items-center justify-center pt-16 bg-gray-50 px-4">
@@ -131,6 +142,7 @@ const Register: React.FC = () => {
             </div>
           </div>
           <button
+            disabled={isLogginIn}
             type="submit"
             className="w-full bg-green-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-green-700 transition duration-300"
           >

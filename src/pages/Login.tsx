@@ -25,8 +25,10 @@ const Login: React.FC = () => {
 
       if(response && response.status == 200) {
        toast.success(response.data.message);
-       localStorage.setItem('userData', response.data.user);
+       console.log(response.data);
+       localStorage.setItem('userData', response.data.data);
        localStorage.setItem('userToken', response.data.token);
+       window.location.href="/"
       }
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
@@ -64,7 +66,7 @@ const Login: React.FC = () => {
             <label className="block text-gray-700 text-xs font-semibold mb-2">Password</label>
             <div className='flex items-center border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 pr-4'>
             <input
-              type="password"
+              type={togglePassword ? "text" : "password"}
               name="password"
               value={formData.password}
               onChange={handleInputChange}
