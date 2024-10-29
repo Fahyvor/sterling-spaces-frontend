@@ -31,6 +31,7 @@ const Register: React.FC = () => {
       return;
     }
     console.log("Registering with", formData);
+    setIsLogginIn(true);
     // Handle registration logic here
     try {
       const response = await axios.post(`${API_URL}/api/auth/login`, formData);
@@ -117,14 +118,17 @@ const Register: React.FC = () => {
           </div>
           <div className="mb-6">
             <label className="block text-gray-700 text-xs font-medium mb-2">Confirm Password</label>
+            <div className='flex items-center border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 pr-4'>
             <input
               type={togglePassword ? "text" : "password"}
               name="confirmPassword"
               value={formData.confirmPassword}
               onChange={handleInputChange}
               required
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+              className="w-full px-4 py-2 outline-none"
             />
+            {togglePassword ? <FaRegEye onClick={() => setTogglePassword(!togglePassword)}/> : <FaRegEyeSlash onClick={() => setTogglePassword(!togglePassword)}/>} 
+            </div>
           </div>
           <button
             type="submit"

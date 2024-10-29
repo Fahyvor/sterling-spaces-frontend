@@ -19,6 +19,7 @@ const Login: React.FC = () => {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     console.log("Logging in with", formData);
+    setIsLogginIn(true);
     try {
       const response = await axios.post(`${API_URL}/api/auth/login`, formData);
 
@@ -27,9 +28,16 @@ const Login: React.FC = () => {
        localStorage.setItem('userData', response.data.user);
        localStorage.setItem('userToken', response.data.token);
       }
-    } catch (error: any) {
-      toast.error(error)
-      console.log(error)
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        toast.error(error.response?.data?.message || 'An error occurred');
+        console.log(error.response?.data || error.message);
+      } else {
+        toast.error('An unexpected error occurred');
+        console.log('Unexpected error:', error);
+      }
+    } finally {
+      setIsLogginIn(false);
     }
   };
 
