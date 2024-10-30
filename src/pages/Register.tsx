@@ -44,7 +44,7 @@ const Register: React.FC = () => {
   
       if (response && response.data) {
         toast(response.data.message); // Accessing message from response.data
-        window.location.href="/login"
+        window.location.href="/#/login"
       }
     } catch (error) {
       console.error("Error during registration:", error);
@@ -151,7 +151,7 @@ const Register: React.FC = () => {
         </form>
         <p className="text-center text-gray-600 mt-6">
           Already have an account?{" "}
-          <a href="/login" className="text-green-500 hover:underline">
+          <a href="/#/login" className="text-green-500 hover:underline">
             Login
           </a>
         </p>

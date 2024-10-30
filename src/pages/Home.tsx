@@ -39,7 +39,7 @@ const Home: React.FC = () => {
         <div className="relative bg-black bg-opacity-50 text-white p-8 rounded-lg text-center">
             <h1 className="text-4xl font-bold mb-4">Find Your Perfect Rental Home</h1>
             <p className="text-lg mb-6">Discover homes for rent across the Rivers State</p>
-            <a href="/search" className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-full">Get Started</a>
+            <a href="/#/search" className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-full">Get Started</a>
         </div>
         </div>
 

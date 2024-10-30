@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { HashRouter as Router, Routes, Route } from 'react-router-dom'
 import Home from './pages/Home'
 import About from './pages/About'
 import NotFound from './pages/NotFound'
@@ -21,7 +21,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/search" element={<Search />} />
-        <Route path="/property/:id" element={<PropertyDetailPage />} />
+        <Route path="/#/property/:id" element={<PropertyDetailPage />} />
         <Route path="/add-house" element={<AddHouse />} />
         <Route path="*" element={<NotFound />} />
       </Routes>

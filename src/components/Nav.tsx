@@ -36,7 +36,7 @@ const Nav: React.FC = () => {
                 <div className='logout_button'>
                     {isLoggedIn ? 
                     <button>Hello, {userFullName}</button>
-                     : <button><a href="/login">Login</a></button>
+                     : <button><a href="/#/login">Login</a></button>
                     }
                 </div>
             </div>
@@ -79,7 +79,7 @@ const Nav: React.FC = () => {
                 <div className='logout_button'>
                     {isLoggedIn ? 
                     <button>Hello, {userFullName}</button>
-                    : <button><a href="/login">Login</a></button>
+                    : <button><a href="/#/login">Login</a></button>
                     }
                 </div>
                 </div>
