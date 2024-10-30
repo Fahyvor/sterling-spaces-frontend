@@ -1,16 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import apartment1 from '../assets/apartment1.jpeg';
 import apartment2 from '../assets/apartment2.jpeg';
 import heroImage from '../assets/hero.jpg';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
+import { API_URL } from '../apiUrl';
 
 interface Listing {
   id: number;
   title: string;
   address: string;
   price: number;
-  image: string;
-  localGovernment: string;
+  images: string;
+  localGovt: string;
   state: string;
 }
 
@@ -24,15 +26,9 @@ const stateLGAMap: Record<string, string[]> = {
 const nigerianStates = Object.keys(stateLGAMap);
 
 const listings: Listing[] = [
-  { id: 1, title: "One Bedroom Apartment", localGovernment: "Port Harcourt", state: "Rivers", address: "123 Airforce Road", price: 120000, image: apartment1 },
-  { id: 2, title: "Self Contain Apartment", localGovernment: "Port Harcourt", state: "Rivers", address: "23 Ogbunabali Road,", price: 150000, image: apartment2 },
-  { id: 3, title: "Two Bedroom Apartment", localGovernment: "Port Harcourt", state: "Rivers", address: "238 Trans Amadi Industrial Layout  ", price: 200000, image: heroImage },
-  { id: 4, title: "One Bedroom Apartment", localGovernment: "Port Harcourt", state: "Rivers", address: "123 Airforce Road", price: 120000, image: apartment1 },
-  { id: 5, title: "Self Contain Apartment", localGovernment: "Port Harcourt", state: "Rivers", address: "23 Ogbunabali Road,", price: 150000, image: apartment2 },
-  { id: 6, title: "Two Bedroom Apartment", localGovernment: "Port Harcourt", state: "Rivers", address: "238 Trans Amadi Industrial Layout  ", price: 200000, image: heroImage },
-  { id: 7, title: "One Bedroom Apartment", localGovernment: "Port Harcourt", state: "Rivers", address: "123 Airforce Road", price: 120000, image: apartment1 },
-  { id: 8, title: "Self Contain Apartment", localGovernment: "Port Harcourt", state: "Rivers", address: "23 Ogbunabali Road,", price: 150000, image: apartment2 },
-  { id: 9, title: "Two Bedroom Apartment", localGovernment: "Port Harcourt", state: "Rivers", address: "238 Trans Amadi Industrial Layout  ", price: 200000, image: heroImage },
+  { id: 1, title: "One Bedroom Apartment", localGovt: "Port Harcourt", state: "Rivers", address: "123 Airforce Road", price: 120000, images: apartment1 },
+  { id: 2, title: "Self Contain Apartment", localGovt: "Port Harcourt", state: "Rivers", address: "23 Ogbunabali Road,", price: 150000, images: apartment2 },
+  { id: 3, title: "Two Bedroom Apartment", localGovt: "Port Harcourt", state: "Rivers", address: "238 Trans Amadi Industrial Layout  ", price: 200000, images: heroImage },
   // Add more listings as needed
 ];
 
@@ -72,7 +68,7 @@ const Search: React.FC = () => {
     const results = listings.filter((listing) => {
       return (
         listing.title.toLowerCase().includes(searchQuery.toLowerCase()) &&
-        (locationFilter === '' || listing.localGovernment.includes(locationFilter)) &&
+        (locationFilter === '' || listing.localGovt.includes(locationFilter)) &&
         (stateFilter === '' || listing.state.includes(stateFilter)) &&
         (minPriceFilter === 0 || listing.price >= minPriceFilter) &&
         (maxPriceFilter === 0 || listing.price <= maxPriceFilter)
@@ -81,9 +77,30 @@ const Search: React.FC = () => {
     setFilteredItems(results);
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     filterItems();
   }, [searchQuery, locationFilter, stateFilter, minPriceFilter, maxPriceFilter]);
+
+  useEffect(() => {
+    const fetchProperties = async () => {
+      try {
+        const response = await axios.get(`${API_URL}/api/properties/all-properties`, {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('userToken')}`,
+          }
+        });
+        console.log(response.data);
+        console.log(response.data[0].images[0])
+        // Assuming response.data is an array of listings
+        setFilteredItems(response.data);
+      } catch (error) {
+        console.error('Error fetching properties:', error);
+      }
+    };
+
+    fetchProperties();
+  }, []);
 
   return (
     <div className="flex flex-col pt-20 items-center py-8 px-4">
@@ -158,14 +175,14 @@ const Search: React.FC = () => {
                 className="bg-white rounded-lg shadow-lg overflow-hidden transform transition-transform duration-300 hover:scale-105"
               >
                 <img
-                  src={listing.image}
+                  src={listing.images}
                   alt={listing.title}
                   className="h-48 w-full object-cover"
                 />
                 <div className="p-4">
                   <h3 className="text-xl font-bold">{listing.title}</h3>
                   <p className="text-gray-600">{listing.address}</p>
-                  <p className='font-semibold'>L.G.A: {listing.localGovernment}</p>
+                  <p className='font-semibold'>L.G.A: {listing.localGovt}</p>
                   <p className='font-semibold'>State: {listing.state}</p>
                   <p className="text-green-600 font-semibold mt-2">
                     N{listing.price}/year
@@ -191,3 +208,4 @@ const Search: React.FC = () => {
 };
 
 export default Search;
+
