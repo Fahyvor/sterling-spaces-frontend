@@ -26,7 +26,7 @@ const Login: React.FC = () => {
       if(response && response.status == 200) {
        toast.success(response.data.message);
        console.log(response.data);
-       localStorage.setItem('userData', response.data.data);
+       localStorage.setItem('userData', JSON.stringify(response.data.newUser));
        localStorage.setItem('userToken', response.data.token);
        window.location.href="/"
       }

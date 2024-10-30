@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import { MdOutlineHomeWork } from "react-icons/md";
 import { CgProfile } from "react-icons/cg";
 import { IoIosContacts } from "react-icons/io";
@@ -9,12 +9,18 @@ const Nav: React.FC = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isHambugerOpen, setIsHambugerOpen] = useState(false);
+    const [userFullName, setUserFullName] = useState('')
 
-    const Login = () => {
-        setIsLoggedIn(true);
-        window.location.href="/login";
-        // Implement login logic here
-    }
+    useEffect(() => {
+        const getUserData = localStorage.getItem("userData")
+        if (getUserData) {
+            setIsLoggedIn(true);
+            const parsedUser = JSON.parse(getUserData)
+            console.log(parsedUser.fullName)
+            setUserFullName(parsedUser.fullName)
+        }
+    }, [])
+
     return (
         <>
         <div className='bg-white backdrop-blur-sm z-20 flex justify-between shadow-md fixed w-full p-3 px-8'>
@@ -29,7 +35,7 @@ const Nav: React.FC = () => {
 
                 <div className='logout_button'>
                     {isLoggedIn ? 
-                    <button onClick={Login}>Logout</button>
+                    <button>Hello, {userFullName}</button>
                      : <button><a href="/login">Login</a></button>
                     }
                 </div>
@@ -72,7 +78,7 @@ const Nav: React.FC = () => {
                 </div>
                 <div className='logout_button'>
                     {isLoggedIn ? 
-                    <button onClick={Login}>Logout</button>
+                    <button>Hello, {userFullName}</button>
                     : <button><a href="/login">Login</a></button>
                     }
                 </div>

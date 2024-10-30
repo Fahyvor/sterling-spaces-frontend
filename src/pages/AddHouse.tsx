@@ -1,4 +1,8 @@
 import React, { useState } from 'react';
+import axios from 'axios';
+import { API_URL } from '../apiUrl';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 type HouseInput = {
   title: string;
@@ -8,10 +12,19 @@ type HouseInput = {
   bedrooms: number;
   bathrooms: number;
   area: number;
-  images: File[]; // Update images to hold multiple files
+  images: File[];
+  localGovernment: string;
+  state: string;
 };
 
 const AddHouse: React.FC = () => {
+  const stateLGAMap: Record<string, string[]> = {
+    "Rivers": [
+      "Abua-Odual", "Ahoada East", "Ahoada West", "Akuku-Toru", "Andoni", "Asari-Toru", "Bonny", "Degema", "Eleme", "Emohua", "Etche", "Gokana", "Ikwerre", "Khana", "Obio-Akpor", "Ogba–Egbema–Ndoni", "Ogu–Bolo", "Okrika", "Omuma", "Opobo–Nkoro", "Oyigbo", "Port Harcourt", "Tai"
+    ],
+    // Add other states and their LGAs here
+  };
+
   const [formData, setFormData] = useState<HouseInput>({
     title: '',
     description: '',
@@ -21,11 +34,14 @@ const AddHouse: React.FC = () => {
     bathrooms: 1,
     area: 0,
     images: [],
+    localGovernment: '',
+    state: '',
   });
 
-  const [previews, setPreviews] = useState<string[]>([]); // For image previews
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [previews, setPreviews] = useState<string[]>([]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
@@ -35,7 +51,7 @@ const AddHouse: React.FC = () => {
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
-      const files = Array.from(e.target.files).slice(0, 4); // Limit to 4 images
+      const files = Array.from(e.target.files).slice(0, 4);
       setFormData((prev) => ({ ...prev, images: files }));
 
       const newPreviews = files.map((file) => URL.createObjectURL(file));
@@ -43,14 +59,30 @@ const AddHouse: React.FC = () => {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(formData);
-    // Add functionality to submit the form data to your backend API
+    setIsSubmitting(true);
+    try {
+      const response = await axios.post(`${API_URL}/api/properties/add-property`, formData);
+      if (response && response.status === 201) {
+        toast.success("House Successfully Created");
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        toast.error(error.response.data.message || "An error occurred while creating the house");
+      } else {
+        toast.error("An unexpected error occurred");
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
     <div className="w-1/2 pt-16 mx-auto py-8">
+      <div className='toastify-message'>
+        <ToastContainer />
+      </div>
       <h2 className="text-2xl font-bold mb-6 text-center">List Your Property</h2>
       <form onSubmit={handleSubmit} className="bg-white shadow-md rounded-lg p-6">
         {/* Property Title */}
@@ -100,6 +132,57 @@ const AddHouse: React.FC = () => {
             placeholder="Enter the property address"
             required
           />
+        </div>
+
+        {/* State */}
+        <div className="mb-4">
+          <label htmlFor="state" className="block text-gray-700 font-semibold mb-2">
+            State
+          </label>
+          <select
+            id="state"
+            name="state"
+            value={formData.state}
+            onChange={(e) => {
+              handleChange(e);
+              setFormData((prev) => ({
+                ...prev,
+                localGovernment: '', // Reset LGA when state changes
+              }));
+            }}
+            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+            required
+          >
+            <option value="">Select a state</option>
+            {Object.keys(stateLGAMap).map((state) => (
+              <option key={state} value={state}>
+                {state}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Local Government */}
+        <div className="mb-4">
+          <label htmlFor="localGovernment" className="block text-gray-700 font-semibold mb-2">
+            Local Government
+          </label>
+          <select
+            id="localGovernment"
+            name="localGovernment"
+            value={formData.localGovernment}
+            onChange={handleChange}
+            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+            required
+          >
+            <option value="">Select a local government</option>
+            {formData.state &&
+              stateLGAMap[formData.state]?.map((localGov) => (
+                <option key={localGov} value={localGov}>
+                  {localGov}
+                </option>
+              ))}
+          </select>
         </div>
 
         {/* Price */}
@@ -170,23 +253,22 @@ const AddHouse: React.FC = () => {
         </div>
 
         {/* Image Upload */}
-        <div className="mb-6">
-          <label htmlFor="image" className="block text-gray-700 font-semibold mb-2">
-            Property Images (Max 4)
+        <div className="mb-4">
+          <label htmlFor="images" className="block text-gray-700 font-semibold mb-2">
+            Upload Images (Max 4)
           </label>
           <input
             type="file"
-            id="image"
+            id="images"
             name="images"
             onChange={handleImageChange}
-            className="w-full px-4 py-2 border rounded-lg"
             multiple
             accept="image/*"
-            required
+            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
           />
-          <div className="grid grid-cols-2 gap-4 mt-4">
-            {previews.map((preview, index) => (
-              <img key={index} src={preview} alt={`Preview ${index + 1}`} className="w-full h-32 object-cover rounded-lg" />
+          <div className="flex space-x-4 mt-2">
+            {previews.map((src, index) => (
+              <img key={index} src={src} alt={`preview ${index}`} className="w-16 h-16 object-cover rounded-lg" />
             ))}
           </div>
         </div>
@@ -194,9 +276,10 @@ const AddHouse: React.FC = () => {
         {/* Submit Button */}
         <button
           type="submit"
-          className="w-full bg-green-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-green-700 transition duration-300"
+          className="bg-green-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-green-600 w-full"
+          disabled={isSubmitting}
         >
-          Submit Property
+          {isSubmitting ? 'Submitting...' : 'Add Property'}
         </button>
       </form>
     </div>
