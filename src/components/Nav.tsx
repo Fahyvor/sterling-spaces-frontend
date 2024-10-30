@@ -60,7 +60,7 @@ const Nav: React.FC = () => {
                 }
             </div>
         </div>
-        <div className='w-1/2 relative'>
+        <div className='w-1/2 fixed pt-12'>
             {isMenuOpen ? 
                 (
                 <div className='absolute p-4 z-40 bg-gray-200 h-screen w-full flex flex-col gap-10 pt-8'>
