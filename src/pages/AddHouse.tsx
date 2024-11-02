@@ -130,6 +130,7 @@ const handleSubmit = async (e: React.FormEvent) => {
     if (response && response.status === 201) {
       toast.success("House Successfully Created");
     }
+    window.location.href="/"
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {
       toast.error(error.response.data.message || "An error occurred while creating the house");

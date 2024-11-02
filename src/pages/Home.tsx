@@ -1,12 +1,11 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
-// Import images
-import apartment1 from '../assets/apartment1.jpeg';
-import apartment2 from '../assets/apartment2.jpeg';
 import heroImage from '../assets/hero.jpg';
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Link } from 'react-router-dom';
+import axios from 'axios';
+import { API_URL } from '../apiUrl';
 
 
 gsap.registerPlugin(ScrollTrigger)
@@ -15,22 +14,46 @@ interface Listing {
   title: string;
   address: string;
   price: number;
-  image: string;
+  images: string;
 }
 
-const listings: Listing[] = [
-  { id: 1, title: "One Bedroom Apartment", address: "123 Airforce Road", price: 120000, image: apartment1 },
-  { id: 2, title: "Self Contain Apartment", address: "23 Ogbunabali Road,", price: 150000, image: apartment2 },
-  { id: 3, title: "Two Bedroom Apartment", address: "238 Trans Amadi Industrial Layout  ", price: 200000, image: heroImage },
-  { id: 4, title: "One Bedroom Apartment", address: "123 Airforce Road", price: 120000, image: apartment1 },
-  { id: 5, title: "Self Contain Apartment", address: "23 Ogbunabali Road,", price: 150000, image: apartment2 },
-  { id: 6, title: "Two Bedroom Apartment", address: "238 Trans Amadi Industrial Layout  ", price: 200000, image: heroImage },
-  { id: 7, title: "One Bedroom Apartment", address: "123 Airforce Road", price: 120000, image: apartment1 },
-  { id: 8, title: "Self Contain Apartment", address: "23 Ogbunabali Road,", price: 150000, image: apartment2 },
-  { id: 9, title: "Two Bedroom Apartment", address: "238 Trans Amadi Industrial Layout  ", price: 200000, image: heroImage },
-];
+// const listings: Listing[] = [
+//   { id: 1, title: "One Bedroom Apartment", address: "123 Airforce Road", price: 120000, image: apartment1 },
+//   { id: 2, title: "Self Contain Apartment", address: "23 Ogbunabali Road,", price: 150000, image: apartment2 },
+//   { id: 3, title: "Two Bedroom Apartment", address: "238 Trans Amadi Industrial Layout  ", price: 200000, image: heroImage },
+//   { id: 4, title: "One Bedroom Apartment", address: "123 Airforce Road", price: 120000, image: apartment1 },
+//   { id: 5, title: "Self Contain Apartment", address: "23 Ogbunabali Road,", price: 150000, image: apartment2 },
+//   { id: 6, title: "Two Bedroom Apartment", address: "238 Trans Amadi Industrial Layout  ", price: 200000, image: heroImage },
+//   { id: 7, title: "One Bedroom Apartment", address: "123 Airforce Road", price: 120000, image: apartment1 },
+//   { id: 8, title: "Self Contain Apartment", address: "23 Ogbunabali Road,", price: 150000, image: apartment2 },
+//   { id: 9, title: "Two Bedroom Apartment", address: "238 Trans Amadi Industrial Layout  ", price: 200000, image: heroImage },
+// ];
 
 const Home: React.FC = () => {
+
+  const [listings, setListings] = useState<Listing[]>([]);
+  const [property, setProperty] = useState<boolean>(false)
+
+  useEffect(() => {
+    const fetchProperties = async () => {
+      try {
+        setProperty(true);
+        const response = await axios.get(`${API_URL}/api/properties/available-properties`);
+        console.log(response.data);
+        // Assuming response.data is an array of listings
+        setListings(response.data);
+        console.log('data images', response.data[0].images[0]);
+      } catch (error) {
+        console.error('Error fetching properties:', error);
+      } finally {
+        setProperty(false);
+      }
+    };
+
+    fetchProperties();
+  }, []);
+
+
   return (
     <div className=" bg-gray-50">
       {/* Hero Section */}
@@ -63,17 +86,20 @@ const Home: React.FC = () => {
       </div>
 
       {/* Popular Listings */}
+      {property ? 
+      <p className='text-center my-2 font-bold text-2xl'>Loading...</p>
+      : 
       <div className="py-12">
             <div className="container mx-auto px-4 text-center">
                 <h2 className="text-3xl font-semibold mb-8">Available Houses</h2>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {listings.map(listing => (
+                {listings?.map(listing => (
                     <div
                     key={listing.id}
                     className="bg-white rounded-lg shadow-lg overflow-hidden transform transition-transform duration-300 hover:scale-105"
                     >
                     <img
-                        src={listing.image}
+                        src={listing.images?.[0]}
                         alt={listing.title}
                         className="h-48 w-full object-cover"
                     />
@@ -94,6 +120,7 @@ const Home: React.FC = () => {
                 </div>
             </div>
         </div>
+      }
 
       {/* Promotional Section */}
       <section className="py-16 bg-green-600 text-white">

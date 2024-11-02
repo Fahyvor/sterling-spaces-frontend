@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import apartment1 from '../assets/apartment1.jpeg';
-import apartment2 from '../assets/apartment2.jpeg';
-import heroImage from '../assets/hero.jpg';
+// import apartment1 from '../assets/apartment1.jpeg';
+// import apartment2 from '../assets/apartment2.jpeg';
+// import heroImage from '../assets/hero.jpg';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { API_URL } from '../apiUrl';
@@ -25,20 +25,14 @@ const stateLGAMap: Record<string, string[]> = {
 
 const nigerianStates = Object.keys(stateLGAMap);
 
-const listings: Listing[] = [
-  { id: 1, title: "One Bedroom Apartment", localGovt: "Port Harcourt", state: "Rivers", address: "123 Airforce Road", price: 120000, images: apartment1 },
-  { id: 2, title: "Self Contain Apartment", localGovt: "Port Harcourt", state: "Rivers", address: "23 Ogbunabali Road,", price: 150000, images: apartment2 },
-  { id: 3, title: "Two Bedroom Apartment", localGovt: "Port Harcourt", state: "Rivers", address: "238 Trans Amadi Industrial Layout  ", price: 200000, images: heroImage },
-  // Add more listings as needed
-];
-
 const Search: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [locationFilter, setLocationFilter] = useState('');
   const [stateFilter, setStateFilter] = useState('');
   const [minPriceFilter, setMinPriceFilter] = useState(0);
   const [maxPriceFilter, setMaxPriceFilter] = useState(0);
-  const [filteredItems, setFilteredItems] = useState<Listing[]>(listings);
+  const [listings, setListings] = useState<Listing[]>([]);
+  const [filteredItems, setFilteredItems] = useState<Listing[]>([]);
   const [availableLGAs, setAvailableLGAs] = useState<string[]>([]);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -65,7 +59,7 @@ const Search: React.FC = () => {
   };
 
   const filterItems = () => {
-    const results = listings.filter((listing) => {
+    const results = listings.filter((listing: Listing) => {
       return (
         listing.title.toLowerCase().includes(searchQuery.toLowerCase()) &&
         (locationFilter === '' || listing.localGovt.includes(locationFilter)) &&
@@ -91,9 +85,9 @@ const Search: React.FC = () => {
           }
         });
         console.log(response.data);
-        console.log(response.data[0].images[0])
         // Assuming response.data is an array of listings
         setFilteredItems(response.data);
+        setListings(response.data);
       } catch (error) {
         console.error('Error fetching properties:', error);
       }
@@ -175,7 +169,7 @@ const Search: React.FC = () => {
                 className="bg-white rounded-lg shadow-lg overflow-hidden transform transition-transform duration-300 hover:scale-105"
               >
                 <img
-                  src={listing.images}
+                  src={listing.images[0]}
                   alt={listing.title}
                   className="h-48 w-full object-cover"
                 />
@@ -201,11 +195,10 @@ const Search: React.FC = () => {
 
       {/* No Results Message */}
       {filteredItems.length === 0 && (
-        <p className="text-gray-500 mt-6">No items found. Try adjusting your filters.</p>
+        <p className="text-gray-500 mt-6">No items found. Please wait a little.</p>
       )}
     </div>
   );
 };
 
 export default Search;
-

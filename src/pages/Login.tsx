@@ -80,7 +80,7 @@ const Login: React.FC = () => {
             type="submit"
             className="w-full bg-green-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-green-700 transition duration-300"
           >
-              {isLogginIn ? "Logggin In..." : "Login"}
+              {isLogginIn ? "Logging In..." : "Login"}
           </button>
         </form>
         <p className="text-center text-gray-600 mt-6">
