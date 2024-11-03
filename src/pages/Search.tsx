@@ -110,7 +110,7 @@ const Search: React.FC = () => {
       />
       
       {/* Filters */}
-      <div className="flex space-x-4 mb-6">
+      <div className="grid lg:grid-cols-4 md:grid-cols-4 grid-cols-2 gap-4 mb-6">
         {/* State Filter */}
         <select
           value={stateFilter}

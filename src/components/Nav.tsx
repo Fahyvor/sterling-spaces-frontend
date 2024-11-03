@@ -21,9 +21,14 @@ const Nav: React.FC = () => {
         }
     }, [])
 
+    const handleMenuItemClick = () => {
+        setIsMenuOpen(false);
+        setIsHambugerOpen(false);
+    };
+
     return (
         <>
-        <div className='bg-white backdrop-blur-sm z-20 flex justify-between shadow-md fixed w-full p-3 px-8'>
+        <div className='bg-white backdrop-blur-sm z-30 flex justify-between shadow-md fixed w-full p-3 px-8'>
             <div className="name_and_logo lg:w-[25%] md:w-[35%] w-1/2">
                 <a href='/' className='no-underline text-green-600 font-semibold text-xl'>Sterling Spaces</a>
             </div>
@@ -60,26 +65,26 @@ const Nav: React.FC = () => {
                 }
             </div>
         </div>
-        <div className='w-1/2 fixed pt-12'>
+        <div className='w-1/2 z-20 fixed pt-12'>
             {isMenuOpen ? 
                 (
                 <div className='absolute p-4 z-40 bg-gray-200 h-screen w-full flex flex-col gap-10 pt-8'>
-                <div className='menu_line flex gap-3 items-center cursor-pointer hover:underline-offset-2 hover:underline'>
+                <div className='menu_line flex gap-3 items-center cursor-pointer hover:underline-offset-2 hover:underline' onClick={handleMenuItemClick}>
                     <MdOutlineHomeWork className='w-5 h-5'/>
-                    <p>Home</p>
+                    <a href='/'>Home</a>
                 </div>
-                <div className='menu_line flex gap-3 items-center cursor-pointer hover:underline-offset-2 hover:underline'>
+                <div className='menu_line flex gap-3 items-center cursor-pointer hover:underline-offset-2 hover:underline' onClick={handleMenuItemClick}>
                     <IoIosContacts className='w-5 h-5'/>
                     <p>Contact Us</p>
                 </div>
-                <div className='menu_line flex gap-3 items-center cursor-pointer hover:underline-offset-2 hover:underline'>
+                <div className='menu_line flex gap-3 items-center cursor-pointer hover:underline-offset-2 hover:underline' onClick={handleMenuItemClick}>
                     <CgProfile className='w-5 h-5'/>
                     <p>Profile</p>
                 </div>
                 <div className='logout_button'>
                     {isLoggedIn ? 
-                    <button>Hello, {userFullName}</button>
-                    : <button><a href="/#/login">Login</a></button>
+                    <button onClick={handleMenuItemClick}>Hello, {userFullName}</button>
+                    : <button onClick={handleMenuItemClick}><a href="/#/login">Login</a></button>
                     }
                 </div>
                 </div>
