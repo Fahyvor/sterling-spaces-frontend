@@ -34,9 +34,9 @@ const Nav: React.FC = () => {
             </div>
 
             <div className='nav_links w-[75%] lg:flex md:flex hidden gap-4 justify-end items-center'> 
-                <MdOutlineHomeWork className='w-5 h-5'/>
+                <a href='/' className='cursor-pointer'><MdOutlineHomeWork className='w-5 h-5'/></a>
                 <IoIosContacts className='w-5 h-5'/>
-                <CgProfile className='w-5 h-5'/>
+                <a href='/#/profile' className='cursor-pointer'><CgProfile className='w-5 h-5'/></a>
 
                 <div className='logout_button'>
                     {isLoggedIn ? 

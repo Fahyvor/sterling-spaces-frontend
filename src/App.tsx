@@ -8,6 +8,7 @@ import Login from './pages/Login'
 import Register from './pages/Register'
 import Search from './pages/Search'
 import PropertyDetailPage from './pages/ViewProperty'
+import Profile from './pages/Profile'
 import AddHouse from './pages/AddHouse'
 
 function App() {
@@ -23,6 +24,7 @@ function App() {
         <Route path="/search" element={<Search />} />
         <Route path="/property/:id" element={<PropertyDetailPage />} />
         <Route path="/add-house" element={<AddHouse />} />
+        <Route path='/profile' element={<Profile />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
       <Footer />

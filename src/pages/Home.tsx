@@ -127,7 +127,7 @@ const Home: React.FC = () => {
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl font-semibold mb-4">Easy Rentals, Hassle-Free Living</h2>
           <p className="text-lg mb-8">Our platform makes it easy to find and rent homes across the state.</p>
-          <a href="/about" className="bg-white text-green-600 hover:bg-gray-200 font-bold py-2 px-6 rounded-full">Learn More</a>
+          <a href="/#/about" className="bg-white text-green-600 hover:bg-gray-200 font-bold py-2 px-6 rounded-full">Learn More</a>
         </div>
       </section>
     </div>
